@@ -1,3 +1,16 @@
+// --------------------- Start
+#image-grid {
+  img {
+    width: 50%;
+  }
+
+  .clicked {
+    border: 3px inset grey;
+  }
+}
+// --------------------- ID Styles
+
+// --------------------- Class Styles
 .hr-colors {
-  border-top: 1px solid black;  
+  border-top: 1px solid black;
 }
