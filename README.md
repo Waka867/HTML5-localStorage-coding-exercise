@@ -1,0 +1,1 @@
+# shine-coding-exercise
