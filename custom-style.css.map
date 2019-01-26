@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,UAAW,CACT,UAAU,CAAE,eAAe",
+"sources": ["custom-style.scss"],
+"names": [],
+"file": "custom-style.css"
+}
