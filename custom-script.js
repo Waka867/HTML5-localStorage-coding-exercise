@@ -1,3 +1,27 @@
+// Step 1. We need to gather a list of the images that we need to handle. this is generally fetched from a database
+var imgArray  = [
+  '0.png',
+  '1.png',
+  '2.png',
+  '3.png',
+  '4.png',
+  '5.png',
+  '6.png',
+  '7.png'
+];
+
+// This is where we dictate whether a row break will happen or not and then we append the row item, thus placing the image
+var imagePlacer = function(b, rowElem, colElem, imgElem, colElemEnd, rowElemEnd, imgColID ){
+  if( b ){
+    $("#" + imgColID).after(colElem + imgElem + colElemEnd + rowElemEnd);
+
+    console.log('second item' + imgColID);
+  } else {
+    $("#image-grid").append(rowElem + colElem + imgElem + colElemEnd);
+    console.log('first item');
+  }
+}
+
 // onclick Callback
 // Step 2. Create click handler that takes img id and tracks when an <img> is clicked. Single clicks only for order. This should also maintain and save a count of clicks for each image
 // NOTE: This had to be placed outside of the scope of this jQuery document ready function at line 1
@@ -13,6 +37,10 @@ var clickHandler = function(imgIDselector){
     console.log('The element ' + clickedImg + ' is not present in local storage');
     // Use jQuery to dynamically change clickCount
     $("#clickCount_" + clickedImg ).html('1');
+
+    // If the img has not yet been clicked, add to clickCountList
+    clickCountList(clickedImg);
+
   } else {
     var currentCount  = localStorage.getItem(clickedImg);
     // If the item does exist, increment the clicked number by one then set that new value in place of the old one
@@ -23,8 +51,18 @@ var clickHandler = function(imgIDselector){
 
     // Use jQuery to dynamically change clickCount
     $("#clickCount_" + clickedImg ).html(currentCount);
+
+
   }
 };
+
+
+// This is where we add the click count to a list visible to the user that consistently reorders itself?
+var clickCountList = function(imgID){
+  $("#clickCountList").append("<li>" + imgID + "</li>");
+}
+
+
 
 $(document).ready(function() {
   function storageAvailable(type) {
@@ -63,17 +101,7 @@ $(document).ready(function() {
 
 
 
-  // Step 1. We need to gather a list of the images that we need to handle
-  var imgArray  = [
-    '0.png',
-    '1.png',
-    '2.png',
-    '3.png',
-    '4.png',
-    '5.png',
-    '6.png',
-    '7.png'
-  ];
+
 
 
 
@@ -109,20 +137,25 @@ $(document).ready(function() {
 
     var colElem     = '<div class="col-md-6" id="' + imgColID + '">';
 
-    var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/><div style="text-align: center;">Click Counter:<p id="clickCount_' + imgID + '">0</p></div>';
+    var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/><div style="text-align: center;">' + imgID + ' Click Counter:<p id="clickCount_' + imgID + '">0</p></div>';
 
     var colElemEnd  = '</div>';
 
     var rowElemEnd  = '</div>';
 
-    // This is where we dictate whether a row break will happen or not and then we append the row item
+    // Checks to see when we need to trigger a row close or not then build grid
     if( (i % 2) === 1 ){
-      var imgColID    = "img_col_" + (i - 1);
-
-      $("#" + imgColID).after(colElem + imgElem + colElemEnd + rowElemEnd);
+      var b  = 1;
+      imgColID = "img_col_" + (i - 1);
+      imagePlacer( b, rowElem, colElem, imgElem, colElemEnd, rowElemEnd, imgColID );
     } else {
-      $("#image-grid").append(rowElem + colElem + imgElem + colElemEnd);
+      var b = 0;
+      imagePlacer( b, rowElem, colElem, imgElem, colElemEnd, rowElemEnd, imgColID );
     }
+
+    // This function builds the image grid
+    // imagePlacer( i, rowElem, colElem, imgElem, colElemEnd, rowElemEnd );
+
   }
 
   // Step 6. Create button logic to sort images by saved order
