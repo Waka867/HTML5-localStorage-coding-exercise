@@ -128,5 +128,4 @@ $(document).ready(function() {
   // Step 6. Create button logic to sort images by saved order
 
   // Step 7. Create button logic to sort images by stored click count
-
 });
