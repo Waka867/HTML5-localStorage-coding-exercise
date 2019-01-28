@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AAEE,eAAI,CACF,KAAK,CAAE,GAAG,CAGZ,oBAAS,CACP,MAAM,CAAE,cAAc,CAM1B,UAAW,CACT,UAAU,CAAE,eAAe",
+"mappings": "AAEE,eAAI,CACF,KAAK,CAAE,GAAG,CAGZ,oBAAS,CACP,MAAM,CAAE,cAAc,CAGxB,sBAAW,CACT,MAAM,CAAE,OAAO,CAMnB,UAAW,CACT,UAAU,CAAE,eAAe",
 "sources": ["custom-style.scss"],
 "names": [],
 "file": "custom-style.css"
