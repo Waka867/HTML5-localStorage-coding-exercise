@@ -1,7 +1,7 @@
 // --------------------- Start
 #image-grid {
   img {
-    width: 50%;
+    width: 25vw;
   }
 
   .clicked {
@@ -10,6 +10,10 @@
 
   .handpoint {
     cursor: pointer;
+  }
+
+  .row {
+    margin-bottom: 2%;
   }
 }
 // --------------------- ID Styles

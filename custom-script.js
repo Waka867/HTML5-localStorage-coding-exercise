@@ -34,32 +34,45 @@ var clickHandler = function(imgIDselector){
   // Check to see if an item matching the imgIDselector exists in localStorage
   if(localStorage.getItem(clickedImg) == null){
     localStorage.setItem(clickedImg, "1");
-    console.log('The element ' + clickedImg + ' is not present in local storage');
+
+    var currentCount  = localStorage.getItem(clickedImg);
+
+    // console.log('The element ' + clickedImg + ' is not present in local storage');
     // Use jQuery to dynamically change clickCount
     $("#clickCount_" + clickedImg ).html('1');
 
     // If the img has not yet been clicked, add to clickCountList
-    clickCountList(clickedImg);
+    clickCountList(clickedImg, 1);
 
   } else {
+
     var currentCount  = localStorage.getItem(clickedImg);
     // If the item does exist, increment the clicked number by one then set that new value in place of the old one
     currentCount++;
 
-    console.log('The element ' + clickedImg + ' is already present in local storage and it has been clicked ' + currentCount + ' times.');
+    // console.log('The element ' + clickedImg + ' is already present in local storage and it has been clicked ' + currentCount + ' times.');
     localStorage.setItem(clickedImg, currentCount);
 
-    // Use jQuery to dynamically change clickCount
+    // Use jQuery to dynamically change clickCount under img
     $("#clickCount_" + clickedImg ).html(currentCount);
+    // Use jQuery to dynamically change clickCount in click count list
+    $("#" + clickedImg + "_clickcount" ).html(currentCount);
+    $("#" + clickedImg + "_clickcount" ).val(currentCount);
 
-
+    // Adds a click count list entry even if the item has been clicked in the past
+    // clickCountList(clickedImg, currentCount);
+    // TODO: Make it so that either the list of click items generates on page load or an entry is added even when there was a localStorage item but check to see if it has already been added and don't add a second time
   }
+
+  // Here we should create a call to tinySort that sorts the click list each time a click is made
+  var clickCountListEntries = $("#clickCountList").children();
+  tinysort(clickCountListEntries, {selector:"li > span", useValue:"true", order:'desc'});
 };
 
 
 // This is where we add the click count to a list visible to the user that consistently reorders itself?
-var clickCountList = function(imgID){
-  $("#clickCountList").append("<li>" + imgID + "</li>");
+var clickCountList = function(imgID, clickcount){
+  $("#clickCountList").append("<li value='" + clickcount + "' id='" + imgID + "_list_item'>" + imgID + " - click count:<span id=" + imgID + "_clickcount>" + clickcount + "</span></li>");
 }
 
 
@@ -137,7 +150,9 @@ $(document).ready(function() {
 
     var colElem     = '<div class="col-md-6" id="' + imgColID + '">';
 
-    var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/><div style="text-align: center;">' + imgID + ' Click Counter:<p id="clickCount_' + imgID + '">0</p></div>';
+    // var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/><div style="text-align: center;">' + imgID + ' Click Counter:<p id="clickCount_' + imgID + '">0</p></div>';
+    var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/>';
+
 
     var colElemEnd  = '</div>';
 
