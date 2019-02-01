@@ -27,9 +27,20 @@
     </div>
     <!-- Via JS, programatically add rows/col-md-4 divs (we have a total of eight images and they are to be laid out in a 2wx4h grid ) -->
       <div class="row">
-        <div class="col-md-4"></div>
         <div class="col-md-4">
+          <p><strong>List of image clicks by total</strong></p>
           <ul id="clickCountList"></ul>
+        </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4"></div>
+      </div>
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-2">
+          <button type="button" id="saveButton" class="btn btn-outline center-block orderButton" onclick="addToClickOrderList(imgClickOrder)">Save Image Order</button>
+        </div>
+        <div class="col-md-2">
+          <button type="button" id="resetButton" class="btn btn-outline center-block orderButton" onclick="resetClickOrderList(imgClickOrder)">Reset Image Order</button>
         </div>
         <div class="col-md-4"></div>
       </div>

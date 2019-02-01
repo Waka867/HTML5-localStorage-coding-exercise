@@ -1,4 +1,4 @@
- <!-- Shine Coding Exercise
+Shine Coding Exercise
 
 
 Using html, css, and javascript (any javascript libraries such as React, JQuery, etc can be used if desired), take the following list of eight images and lay them out on a single web page in a 2x4 grid (grid is 2 units wide).
@@ -27,11 +27,16 @@ Questions:
 
 What parts of this task were familiar/easy?
 
+I would say that general usage of jQuery/DOM traversal, SASS styling, image grid placement, array iteration and localStorage use were easy. I'm familiar with pushing and splicing on arrays, as well as programmatically manipulating front-end elements. Making sure that elements were reasonably mobile friendly was simple, although I could have gone into even deeper detail for a project.
+
 
 
 What parts of this task were new/unfamiliar
 
+Although I knew about its overall purpose, I had not used localStorage before as my previous projects typically relied on a database, and user profile or layout changes would be stored as user configs. Other information such as log in state were handled via php SESSION.
 
 
 
-Were there any coding decisions you feel need further explanation? -->
+Were there any coding decisions you feel need further explanation?
+
+I tried to make the UX as smooth as possible so there are alerts/confirms when Image Order is to be reset and saved. I also started by simply writing out steps and iteration/tuning those until I got the finished product. Most comments have been preserved so you can have an idea of the thought process behind my work.

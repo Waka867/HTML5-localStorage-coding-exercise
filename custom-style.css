@@ -1,2 +1,2 @@
-#image-grid img{width:25vw}#image-grid .clicked{border:3px inset grey}#image-grid .handpoint{cursor:pointer}#image-grid .row{margin-bottom:2%}.hr-colors{border-top:1px solid black}
+#image-grid img{width:25vw}#image-grid .clicked{border:3px inset grey}#image-grid .handpoint{cursor:pointer}.hr-colors{border-top:1px solid black}.orderButton{background-color:white;color:black;border:2px solid black}.orderButton:hover{background-color:black;color:white}.row{margin-bottom:2%}
 /*# sourceMappingURL=custom-style.css.map */

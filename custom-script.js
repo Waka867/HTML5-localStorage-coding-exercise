@@ -1,5 +1,6 @@
-// Step 1. We need to gather a list of the images that we need to handle. this is generally fetched from a database
-var imgArray  = [
+// We need to gather a list of the images that we need to handle. this is generally fetched from a database
+// If there is a clickOrder array present do not use until you run out of click array items
+var defaultImgArray  = [
   '0.png',
   '1.png',
   '2.png',
@@ -10,64 +11,133 @@ var imgArray  = [
   '7.png'
 ];
 
+
+
+// This holds img click order until ready to insert on save button press
+var imgClickOrder = [];
+
+
+
+// Step 6. Create button logic to sort images by saved order. This function converts imgClickOrder array to JSON string then sets as clickorder in localStorage
+var addToClickOrderList = function(imgClickOrder){
+  if(imgClickOrder.length == 0){
+    alert('Please select images in the order you would like them, then click save.');
+  } else {
+    // If imgClickOrder length is less than the defaultImgArray take any elements not in imgClickOrder that are in defaultImgArray and push them onto the end of imgClickOrder
+    if(imgClickOrder.length < defaultImgArray.length){
+
+      var defaultImgArrayFiltered = defaultImgArray.filter(function(arrayItem){
+        // Returns value of defaultImgArray if it was not found in the imgClickOrder (indexOf returns -1 if not found)
+        return imgClickOrder.indexOf(arrayItem) == -1;
+      });
+
+      // Pushes remaining defaultImgArray images onto the end of the imgClickOrder array to be added to the image grid
+      for(i = 0; i < defaultImgArrayFiltered.length; i++){
+        imgClickOrder.push(defaultImgArrayFiltered[i]);
+      }
+    }
+
+    // Turn imgClickOrder into a string prior to storage
+    var order = JSON.stringify(imgClickOrder);
+    localStorage.setItem('clickOrder', order);
+    // Refreshes page
+    location.reload();
+    alert('Your image order has been successfully saved!');
+  }
+}
+
+
+// Resets image order back to default
+var resetClickOrderList = function(imgClickOrder){
+  var resetConfirm = confirm("Are you sure you want to reset the image order?");
+
+  if(resetConfirm){
+    // var order = JSON.stringify(imgClickOrder);
+    localStorage.removeItem('clickOrder');
+    // Refreshes page
+    location.reload();
+    alert('Your image order has been successfully reset');
+
+  }
+}
+
+
+
 // This is where we dictate whether a row break will happen or not and then we append the row item, thus placing the image
 var imagePlacer = function(b, rowElem, colElem, imgElem, colElemEnd, rowElemEnd, imgColID ){
   if( b ){
     $("#" + imgColID).after(colElem + imgElem + colElemEnd + rowElemEnd);
-
-    console.log('second item' + imgColID);
   } else {
     $("#image-grid").append(rowElem + colElem + imgElem + colElemEnd);
-    console.log('first item');
+
   }
 }
 
-// onclick Callback
-// Step 2. Create click handler that takes img id and tracks when an <img> is clicked. Single clicks only for order. This should also maintain and save a count of clicks for each image
-// NOTE: This had to be placed outside of the scope of this jQuery document ready function at line 1
-var clickHandler = function(imgIDselector){
-  // Step 3. When an img is click, thicken the border or make the image slightly smaller or darker
+
+
+// Create click handler that takes img id and tracks when an <img> is clicked. Single clicks only for order. This should also maintain and save a count of clicks for each image
+var clickHandler = function(imgIDselector, imgFile){
+  // When an img is click, thicken the border to indicate click status or else users will be confused
   $(imgIDselector).toggleClass("clicked");
 
   var clickedImg  = $(imgIDselector).attr('id');
 
-  // Check to see if an item matching the imgIDselector exists in localStorage
+  var currentCount  = localStorage.getItem(clickedImg);
+  // Check to see if an item matching the imgID selector exists in localStorage
   if(localStorage.getItem(clickedImg) == null){
     localStorage.setItem(clickedImg, "1");
-
+    // Gets currentCount after being set to 1 to start
     var currentCount  = localStorage.getItem(clickedImg);
 
-    // console.log('The element ' + clickedImg + ' is not present in local storage');
-    // Use jQuery to dynamically change clickCount
+    // Changes click count to 1 to start off newly clicked item
     $("#clickCount_" + clickedImg ).html('1');
 
-    // If the img has not yet been clicked, add to clickCountList
-    clickCountList(clickedImg, 1);
-
+    // Use jQuery to dynamically change clickCount in click count list
+    $("#" + clickedImg + "_clickcount" ).html(currentCount);
+    $("#" + clickedImg + "_clickcount" ).val(currentCount);
   } else {
 
-    var currentCount  = localStorage.getItem(clickedImg);
+
     // If the item does exist, increment the clicked number by one then set that new value in place of the old one
     currentCount++;
 
-    // console.log('The element ' + clickedImg + ' is already present in local storage and it has been clicked ' + currentCount + ' times.');
     localStorage.setItem(clickedImg, currentCount);
 
-    // Use jQuery to dynamically change clickCount under img
-    $("#clickCount_" + clickedImg ).html(currentCount);
     // Use jQuery to dynamically change clickCount in click count list
     $("#" + clickedImg + "_clickcount" ).html(currentCount);
     $("#" + clickedImg + "_clickcount" ).val(currentCount);
 
-    // Adds a click count list entry even if the item has been clicked in the past
-    // clickCountList(clickedImg, currentCount);
-    // TODO: Make it so that either the list of click items generates on page load or an entry is added even when there was a localStorage item but check to see if it has already been added and don't add a second time
   }
 
-  // Here we should create a call to tinySort that sorts the click list each time a click is made
+
+  // Image click creates a key value pair entry in a clickOrder array that is later stringified to JSON (since localStorage only does strings and JSON is compatible). This will be similar to how the image clickCounts are stored, except that clicking an img that was already clicked will remove a count instead of add a count.
+  var clickOrderList  = localStorage.getItem('clickOrder');
+  // Add if statement to see if the imgFile is a value in localStorage clickOrder
+  if(imgClickOrder.includes(imgFile)){
+    // Remove the array img file name from the clickOrder if the imgFile is already in the array
+    imgClickOrder.splice($.inArray(imgFile, imgClickOrder),1);
+    // Preps for removing click count indicator
+    // var countToRemove = "#" + imgIDselector.id + "_count_num";
+    // Removes click count after user clicks an img that already has an entry in the imgClickOrder
+    // $(countToRemove).remove();
+  } else {
+    // Adds imgFile to array that will get saved to localStorage
+    imgClickOrder.push(imgFile);
+    // Here we grab the index location of the imgFile we just added.
+    var coGet = $.inArray(imgFile, imgClickOrder);
+    // Offset from zero indexing so that click order indicator makes sense
+    var co    = coGet + 1;
+    // Here is where we add the number on or next to the image that corresponds to click order
+    // $(imgIDselector).after("<div class='text-center' id='" + imgIDselector.id + "_count_num'>Click Order: " + co + "</div>");
+  }
+
+
+
+  // Function call to tinySort that dynamically sorts the click count list each time a click is made
   var clickCountListEntries = $("#clickCountList").children();
   tinysort(clickCountListEntries, {selector:"li > span", useValue:"true", order:'desc'});
 };
+
 
 
 // This is where we add the click count to a list visible to the user that consistently reorders itself?
@@ -77,6 +147,8 @@ var clickCountList = function(imgID, clickcount){
 
 
 
+
+// This makes it so some functions are not initialize until the document tree has completed loading
 $(document).ready(function() {
   function storageAvailable(type) {
       try {
@@ -108,23 +180,17 @@ $(document).ready(function() {
     alert('Local storage not supported on the browser. Please try another or update your current browser to the newest version.');
   }
 
-  // Step 0. On page load, read local storage to see if a clicked items order exists and if so, set front-end img order to that saved order. Otherwise, use a default order.
+  // On page load, read local storage to see if a clicked items order exists and if so, set front-end img order to that saved order. Otherwise, use a default order.
+  var previousOrder = localStorage.getItem('clickOrder');
 
+  // If a previous order array exists use that, otherwise use the defaultimgArray
+  if(previousOrder){
+    var imgArray = JSON.parse(previousOrder);
+  } else {
+    var imgArray = defaultImgArray;
+  }
 
-
-
-
-
-
-
-
-
-
-  // Bonus 1 . Add a small number bubble next to the image that was clicked, in the order that it's clicked
-
-  // Step 4. Save order of clicked items to Local Storage
-
-  // Step 5. Insert images into DOM
+  // Insert images into DOM
   for (var i = 0; i < imgArray.length; i++) {
     /*
     // I need a way of breaking up the rows in such a way that there will always be rows of two no matter how many images are added. Here I'm working out what the commonalities and differences are to find a condition of i that can trigger the layout breaks.
@@ -150,9 +216,7 @@ $(document).ready(function() {
 
     var colElem     = '<div class="col-md-6" id="' + imgColID + '">';
 
-    // var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/><div style="text-align: center;">' + imgID + ' Click Counter:<p id="clickCount_' + imgID + '">0</p></div>';
-    var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ')"/>';
-
+    var imgElem     = '<img id="' + imgID + '" src="' + imgArray[i] + '" alt="" class="img-responsive img-thumbnail handpoint center-block" onclick="clickHandler(' + imgID + ', \'' + imgArray[i] + '\')"/>';
 
     var colElemEnd  = '</div>';
 
@@ -168,12 +232,20 @@ $(document).ready(function() {
       imagePlacer( b, rowElem, colElem, imgElem, colElemEnd, rowElemEnd, imgColID );
     }
 
-    // This function builds the image grid
-    // imagePlacer( i, rowElem, colElem, imgElem, colElemEnd, rowElemEnd );
+    // Get imgID in localStorage. True if present, false if not.
+    var cCount  = localStorage.getItem(imgID);
+    // If the imgID already exists as a key, update the image click count then re-sort the list
+    if(cCount){
+      // Add click count list entry
+      clickCountList(imgID, cCount);
+
+      var clickCountListEntries = $("#clickCountList").children();
+      tinysort(clickCountListEntries, {selector:"li > span", useValue:"true", order:'desc'});
+    } else {
+      // Add default click count list entry of 0
+      clickCountList(imgID, 0);
+    }
+
 
   }
-
-  // Step 6. Create button logic to sort images by saved order
-
-  // Step 7. Create button logic to sort images by stored click count
 });
