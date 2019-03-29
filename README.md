@@ -1,4 +1,4 @@
-Shine Coding Exercise
+localStorage Coding Exercise
 
 
 Using html, css, and javascript (any javascript libraries such as React, JQuery, etc can be used if desired), take the following list of eight images and lay them out on a single web page in a 2x4 grid (grid is 2 units wide).
@@ -17,8 +17,6 @@ Notes:
 You can assume we are using the latest version of either Chrome (v71 or higher) or Firefox (v64 or higher) browsers for this exercise (ie. we do not need IE support).
 
 
-
-Zip your solution files and email the zip bundle but make sure the zip is as small as possible - exclude any npm_modules and .git subdirectories and ensure your submission includes build instructions if needed.
 
 
 ------------------------------------------------------------------------------------------------------------------------------
